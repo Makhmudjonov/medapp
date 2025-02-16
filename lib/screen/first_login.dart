@@ -11,7 +11,7 @@ class _OnePageState extends State<OnePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(50),
         child: Column(

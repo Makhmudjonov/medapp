@@ -33,29 +33,44 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login")),
-      body: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/background.png"), fit: BoxFit.cover)),
-        child: Padding(
-          padding: EdgeInsets.all(15),
-          child: Column(
-            children: [
-              Text("Login here"),
-              Text("Welcome back you've been missed!"),
-              TextField(),
-              TextField(),
-              Row(
-                children: [Text("Forget your password?")],
-              ),
-              Container(
-                height: 10,
-                width: 150,
-                color: Colors.blue,
-              ),
-              Text("Create new account"),
-            ],
+      body: SafeArea(
+        child: Container(
+          child: Padding(
+            padding: EdgeInsets.all(40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Login here",style: TextStyle(
+                      color: Color(0xFF1F41BB),
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,),
+                Text("Welcome back you've been missed!",style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 26,
+                      // fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.061),
+                TextField(  keyboardType: TextInputType.emailAddress,
+decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),hintText: "E-mail",labelText: "E-mail",),),
+                SizedBox(height: 10,),
+                TextField(obscureText: true,decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),hintText: "Password",labelText: "Password"),),
+                SizedBox(height: 10,),
+                Row(mainAxisAlignment: MainAxisAlignment.end,
+                  children: [Text("Forget your password?")],
+                ),
+                SizedBox(height: 10,),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  width: 150,
+                  color: Color(0xFF1F41BB)
+                ),
+                SizedBox(height: 10,),
+                Text("Create new account"),
+              ],
+            ),
           ),
         ),
       ),
