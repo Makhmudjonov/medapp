@@ -34,35 +34,29 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Login")),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: "Email"),
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: "Parol"),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: login,
-              child: Text("Kirish"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
-                );
-              },
-              child: Text("Akkauntingiz yo'qmi? Ro'yxatdan o'tish"),
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/background.png"), fit: BoxFit.cover)),
+        child: Padding(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            children: [
+              Text("Login here"),
+              Text("Welcome back you've been missed!"),
+              TextField(),
+              TextField(),
+              Row(
+                children: [Text("Forget your password?")],
+              ),
+              Container(
+                height: 10,
+                width: 150,
+                color: Colors.blue,
+              ),
+              Text("Create new account"),
+            ],
+          ),
         ),
       ),
     );
