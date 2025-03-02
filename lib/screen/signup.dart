@@ -31,7 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
       isLoading = true;
     });
 
-    final Uri url = Uri.parse("http://13.49.49.224:8080/api/auth/login");
+    final Uri url = Uri.parse("https://13.49.49.224:8080/api/auth/login");
 
     try {
       final response = await http.post(

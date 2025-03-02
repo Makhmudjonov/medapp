@@ -7,9 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  String? token = await getToken();
+  bool isValid = await isTokenValid();
   runApp(MyApp(
-    isLoggedIn: token != null,
+    isLoggedIn: isValid != null,
   ));
 }
 
@@ -29,8 +29,13 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-Future<String?> getToken() async {
+Future<bool> isTokenValid() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString("token");
+  String? token = prefs.getString("token");
+  int? expiryTime = prefs.getInt("expiry");
+
+  if (token == null || expiryTime == null) return false; // Token yo‘q yoki muddati yo‘q
+  
+  int currentTime = DateTime.now().millisecondsSinceEpoch;
+  return currentTime < expiryTime; // True: Token hali yaroqli, False: Token eskirgan
 }

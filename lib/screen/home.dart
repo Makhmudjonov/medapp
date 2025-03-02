@@ -2,9 +2,12 @@ import 'dart:developer';
 
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:medapp/main.dart';
 import 'package:medapp/screen/account.dart';
 import 'package:medapp/screen/applications.dart';
 import 'package:medapp/screen/calculator.dart';
+import 'package:medapp/screen/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -31,13 +34,35 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    checkTokenValidity();
+  }
+
+  Future<void> checkTokenValidity() async {
+    bool isValid = await isTokenValid();
+    if (!isValid) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove("token"); // Tokenni o‘chirish
+      await prefs.remove("expiry");
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     /// widget list
     final List<Widget> bottomBarPages = [
       Account(
           // controller: (_controller),
           ),
-      const Calculator(),
+      Calculator(),
       const Applications(),
     ];
     return Scaffold(

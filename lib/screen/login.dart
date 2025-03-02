@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Tokenni localda saqlash
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("token", token);
+        await saveToken(token, 10000);
 
         // Muvaffaqiyatli login bo‘lsa, HomePage-ga o‘tish
         Navigator.pushReplacement(
@@ -152,4 +152,12 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+}
+
+Future<void> saveToken(String token, int expiryInSeconds) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int expiryTime =
+      DateTime.now().millisecondsSinceEpoch + (expiryInSeconds * 1000);
+  await prefs.setString("token", token);
+  await prefs.setInt("expiry", expiryTime);
 }
