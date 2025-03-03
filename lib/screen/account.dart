@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:medapp/screen/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Account extends StatefulWidget {
@@ -105,6 +106,19 @@ class _AccountState extends State<Account> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    remoweToken().then((value) {
+                                      setState(() {});
+                                    });
+                                  },
+                                  child: Text("Log out"),
+                                ),
+                              ],
+                            ),
                             // Profile Avatar
                             Center(
                               child: Column(
@@ -115,7 +129,7 @@ class _AccountState extends State<Account> {
                                       color: Colors.white, // Oq fon
                                       border: Border.all(
                                         color:
-                                            Color(0xFF1F41BB), // Chegara rangi
+                                            Color(0xFF1F41BB), // ChegarRa rangi
                                         width: 3.0, // Chegara qalinligi
                                       ),
                                     ),
@@ -147,8 +161,8 @@ class _AccountState extends State<Account> {
                             buildTextField("Client ID", clientId, true),
                             // Row(
                             //   children: [
-                                buildTextField("First Name", firstName, false),
-                                buildTextField("Last Name", lastName, false),
+                            buildTextField("First Name", firstName, false),
+                            buildTextField("Last Name", lastName, false),
                             //   ],
                             // ),
                             buildTextField("Email", email, true),
@@ -165,7 +179,9 @@ class _AccountState extends State<Account> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.4,
                                   color: Color(0xFF1F41BB),
-                                  child: Center(child: Text("Saqlash"),),
+                                  child: Center(
+                                    child: Text("Saqlash"),
+                                  ),
                                 ),
                               ],
                             )
@@ -198,6 +214,11 @@ class _AccountState extends State<Account> {
   Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("token");
+  }
+
+  Future<Future<bool>> remoweToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove('token');
   }
 
   // Foydalanuvchi ma'lumotlarini yangilash

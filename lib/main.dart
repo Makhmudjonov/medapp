@@ -29,13 +29,16 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 Future<bool> isTokenValid() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? token = prefs.getString("token");
   int? expiryTime = prefs.getInt("expiry");
 
-  if (token == null || expiryTime == null) return false; // Token yo‘q yoki muddati yo‘q
-  
+  if (token == null || expiryTime == null)
+    return false; // Token yo‘q yoki muddati yo‘q
+
   int currentTime = DateTime.now().millisecondsSinceEpoch;
-  return currentTime < expiryTime; // True: Token hali yaroqli, False: Token eskirgan
+  return currentTime <
+      expiryTime; // True: Token hali yaroqli, False: Token eskirgan
 }

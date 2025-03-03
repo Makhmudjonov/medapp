@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -76,16 +77,20 @@ class _CalculatorState extends State<Calculator> {
 
   // Переменные для хранения введенных данных
   String gender = 'Мужской';
+  String zabolivaniya = 'Легкая';
   int age = 0;
   double weight = 0.0;
   double height = 0.0;
   double systolic = 0.0;
   double diastolic = 0.0;
   int pulse = 0;
-  String covidSeverity = 'Легкая';
+  String covidSeverity = 'Тяжелая форма';
   int covidDuration = 0;
   String treatmentStatus = '';
+  String osnZabolivaniya = '';
   List complications = [];
+  String postCovidniyOslojeniya = 'Тяжелая форма';
+
   // Можно добавить поля для постковидных осложнений и основного заболевания
 
   /// Функция для расчета индекса массы тела (ИМТ)
@@ -154,10 +159,14 @@ class _CalculatorState extends State<Calculator> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Text("Пол"),
               // Выбор пола
               DropdownButtonFormField<String>(
                 value: gender,
-                decoration: InputDecoration(labelText: 'Пол'),
+                decoration: InputDecoration(
+                    labelText: 'Пол',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(9))),
                 items: ['Мужской', 'Женский']
                     .map((value) => DropdownMenuItem(
                           value: value,
@@ -169,6 +178,9 @@ class _CalculatorState extends State<Calculator> {
                     gender = value!;
                   });
                 },
+              ),
+              SizedBox(
+                height: 10,
               ),
               // DropdownButtonFormField<String>(
               //   value: gender,
@@ -187,61 +199,106 @@ class _CalculatorState extends State<Calculator> {
               // ),
               // Ввод возраста
               TextFormField(
-                decoration: InputDecoration(labelText: 'Возраст'),
+                decoration: InputDecoration(
+                    labelText: 'Возраст',
+                    counterText: '',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(9))),
                 keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                maxLength: 3,
                 onChanged: (value) {
                   age = int.tryParse(value) ?? 0;
                 },
               ),
-              // Ввод веса
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Вес (кг)'),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  weight = double.tryParse(value) ?? 0.0;
-                },
+              SizedBox(
+                height: 10,
               ),
-              // Ввод роста
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Рост (см)'),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  height = double.tryParse(value) ?? 0.0;
-                },
+              // Ввод веса
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Вес (кг)',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        counterText: '',
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      maxLength: 3,
+                      onChanged: (value) {
+                        weight = double.tryParse(value) ?? 0.0;
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 10), // Ikkita input orasida masofa qo‘shish
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Рост (см)',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        counterText: '',
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      maxLength: 3,
+                      onChanged: (value) {
+                        height = double.tryParse(value) ?? 0.0;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
               ),
               // Ввод систолического давления
               TextFormField(
                 decoration: InputDecoration(
-                    labelText: 'Систолическое давление (мм рт.ст.)'),
+                  labelText: 'Артериальное давление',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   systolic = double.tryParse(value) ?? 0.0;
                 },
               ),
-              // Ввод диастолического давления
-              TextFormField(
-                decoration: InputDecoration(
-                    labelText: 'Диастолическое давление (мм рт.ст.)'),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  diastolic = double.tryParse(value) ?? 0.0;
-                },
+              SizedBox(
+                height: 10,
               ),
               // Ввод пульса
               TextFormField(
-                decoration:
-                    InputDecoration(labelText: 'Пульс в покое (уд/мин)'),
+                decoration: InputDecoration(
+                  labelText: 'Пульс в покое (уд/мин)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   pulse = int.tryParse(value) ?? 0;
                 },
               ),
+              SizedBox(
+                height: 10,
+              ),
               // Выбор тяжести COVID-19
               DropdownButtonFormField<String>(
                 value: covidSeverity,
                 decoration: InputDecoration(
-                    labelText: 'Тяжесть перенесенного COVID-19'),
-                items: ['Легкая', 'Средняя', 'Тяжелая']
+                  labelText: 'Тяжесть перенесенного COVID-19',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                ),
+                items: ['Тяжелая форма', 'Средняя', 'Тяжелая']
                     .map((value) => DropdownMenuItem(
                           value: value,
                           child: Text(value),
@@ -253,17 +310,64 @@ class _CalculatorState extends State<Calculator> {
                   });
                 },
               ),
+              SizedBox(
+                height: 10,
+              ),
               // Ввод длительности COVID-19 (в неделях)
               TextFormField(
                 decoration: InputDecoration(
-                    labelText: 'Длительность COVID-19 (недели)'),
+                  labelText: 'Длительность COVID-19 (недели)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   covidDuration = int.tryParse(value) ?? 0;
                 },
               ),
-              // Дополнительно можно добавить поля для постковидных осложнений и основного заболевания
+              SizedBox(
+                height: 10,
+              ),
+              DropdownButtonFormField<String>(
+                value: zabolivaniya,
+                decoration: InputDecoration(
+                    labelText: 'Постковидное осложнение',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(9))),
+                items: ['Легкая', 'Средняя', 'Тяжелая']
+                    .map((value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    zabolivaniya = value!;
+                  });
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              // Ввод длительности COVID-19 (в неделях)
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Основное заболевание',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  osnZabolivaniya = value ?? "";
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
 
+              // Дополнительно можно добавить поля для постковидных осложнений и основного заболевания
               SizedBox(height: 20),
               ElevatedButton(
                 child: Text('Рассчитать'),
