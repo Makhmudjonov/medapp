@@ -18,12 +18,12 @@ class _CalculatorState extends State<Calculator> {
   Future<void> sendDataToApi() async {
     final url = Uri.parse('http://13.49.49.224:8080/api/userInfo/addInfo');
     final Map<String, dynamic> requestBody = {
-      'gender': gender,
+      'gender': gender.toString(),
       'age': age,
-      'weight': weight,
-      'height': height,
-      'systolic': systolic,
-      'diastolic': diastolic,
+      'weight': weight.toInt(),
+      'height': height.toInt(),
+      'systolic': systolic.toInt(),
+      'diastolic': diastolic.toInt(),
       'restingHeartRate': pulse,
       'infectionDate': DateTime.now().toIso8601String(),
       'durationDays': covidDuration,
@@ -54,6 +54,7 @@ class _CalculatorState extends State<Calculator> {
       print('Data successfully sent');
       _resetForm();
     } else {
+      print(response.statusCode);
       print('Failed to send data');
     }
   }
@@ -360,7 +361,7 @@ class _CalculatorState extends State<Calculator> {
                 ),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  osnZabolivaniya = value ?? "";
+                  complications = [value] ?? [""];
                 },
               ),
               SizedBox(
@@ -371,22 +372,23 @@ class _CalculatorState extends State<Calculator> {
               SizedBox(height: 20),
               ElevatedButton(
                 child: Text('Рассчитать'),
-                onPressed: () {
+                onPressed: () async {
                   // Если потребуется, можно добавить валидацию _formKey.currentState.validate();
-                  String result = determineLoadLevel();
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Результат'),
-                      content: Text(result),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text('OK'),
-                        )
-                      ],
-                    ),
-                  );
+                  // String result = determineLoadLevel();
+                  await sendDataToApi();
+                  // showDialog(
+                  //   context: context,
+                  //   builder: (context) => AlertDialog(
+                  //     title: Text('Результат'),
+                  //     content: Text(result),
+                  //     actions: [
+                  //       TextButton(
+                  //         onPressed: () => Navigator.pop(context),
+                  //         child: Text('OK'),
+                  //       )
+                  //     ],
+                  //   ),
+                  // );
                 },
               ),
             ],
