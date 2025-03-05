@@ -18,17 +18,22 @@ class _CalculatorState extends State<Calculator> {
   Future<void> sendDataToApi() async {
     final url = Uri.parse('http://13.49.49.224:8080/api/userInfo/addInfo');
     final Map<String, dynamic> requestBody = {
-      'gender': gender.toString(),
+      'gender': gender == "Мужской" ? 'MALE' : 'FEMALE',
       'age': age,
       'weight': weight.toInt(),
       'height': height.toInt(),
-      'systolic': systolic.toInt(),
-      'diastolic': diastolic.toInt(),
+      'physicalCondition': "GOOD",
+      'systolic': systolic,
+      'diastolic': diastolic,
       'restingHeartRate': pulse,
-      'infectionDate': DateTime.now().toIso8601String(),
+      // 'infectionDate': DateTime.now().toIso8601String(),
       'durationDays': covidDuration,
-      'covidInfectionSeverity': covidSeverity,
-      'treatmentStatus': treatmentStatus,
+      'covidInfectionSeverity': zabolivaniya == "Легкая"
+          ? "MILD"
+          : zabolivaniya == "Средняя"
+              ? "MODERATE"
+              : "SEVERE",
+      'treatmentStatus': 'NOT_HOSPITALIZED',
       'complications': complications,
     };
 
@@ -62,14 +67,14 @@ class _CalculatorState extends State<Calculator> {
   //reset form
   void _resetForm() {
     setState(() {
-      gender = 'MALE';
+      gender = 'Мужской';
       age = 0;
       weight = 0.0;
       height = 0.0;
       systolic = 0.0;
       diastolic = 0.0;
       pulse = 0;
-      covidSeverity = 'MILD';
+      covidSeverity = 'Тяжелая форма';
       covidDuration = 0;
       treatmentStatus = 'NOT_HOSPITALIZED';
       complications = [];
@@ -152,6 +157,8 @@ class _CalculatorState extends State<Calculator> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Калькулятор Реабилитации'),
+        backgroundColor: Colors.blueAccent,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -259,17 +266,39 @@ class _CalculatorState extends State<Calculator> {
                 height: 10,
               ),
               // Ввод систолического давления
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Артериальное давление',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(9),
+              // Text("Артериальное давление"),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Systolic',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        systolic = double.tryParse(value) ?? 0.0;
+                      },
+                    ),
                   ),
-                ),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  systolic = double.tryParse(value) ?? 0.0;
-                },
+                  SizedBox(width: 10), // Ikkita input orasida masofa qo‘shish
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Diastolic',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        diastolic = double.tryParse(value) ?? 0.0;
+                      },
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 10,
@@ -375,7 +404,23 @@ class _CalculatorState extends State<Calculator> {
                 onPressed: () async {
                   // Если потребуется, можно добавить валидацию _formKey.currentState.validate();
                   // String result = determineLoadLevel();
-                  await sendDataToApi();
+                  await sendDataToApi().then(
+                    (value) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Результат'),
+                          content: Text("result"),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('OK'),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  );
                   // showDialog(
                   //   context: context,
                   //   builder: (context) => AlertDialog(

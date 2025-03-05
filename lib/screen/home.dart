@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
           // controller: (_controller),
           ),
       Calculator(),
-      const Applications(),
+      Applications(),
     ];
     return Scaffold(
       body: PageView(
