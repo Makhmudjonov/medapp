@@ -67,18 +67,21 @@ class _HomePageState extends State<HomePage> {
     ];
     return Scaffold(
       body: PageView(
+        // pageSnapping: false,
+
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: List.generate(
             bottomBarPages.length, (index) => bottomBarPages[index]),
       ),
-      extendBody: true,
+      extendBody: false,
       bottomNavigationBar: (bottomBarPages.length <= maxCount)
           ? AnimatedNotchBottomBar(
               /// Provide NotchBottomBarController
               notchBottomBarController: _controller,
               color: Colors.white,
               showLabel: true,
+
               textOverflow: TextOverflow.visible,
               maxLine: 1,
               shadowElevation: 5,

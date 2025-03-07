@@ -39,7 +39,7 @@ class _CalculatorState extends State<Calculator> {
   ];
 
   //send data
-  Future<void> sendDataToApi() async {
+  Future<int> sendDataToApi() async {
     final url = Uri.parse('http://13.49.49.224:8080/api/userInfo/addInfo');
     final Map<String, dynamic> requestBody = {
       'gender': gender == "Мужской" ? 'MALE' : 'FEMALE',
@@ -67,7 +67,7 @@ class _CalculatorState extends State<Calculator> {
       setState(() {
         isLoading = false;
       });
-      return;
+      // return;
     }
 
     final response = await http.post(
@@ -81,11 +81,13 @@ class _CalculatorState extends State<Calculator> {
 
     if (response.statusCode == 200) {
       print('Data successfully sent');
-      _resetForm();
+      return 200;
+      // return response.statusCode;
     } else {
       print(response.statusCode);
       print('Failed to send data');
     }
+    return 900;
   }
 
   //reset form
@@ -100,14 +102,20 @@ class _CalculatorState extends State<Calculator> {
       pulse = 0;
       covidSeverity = 'Легкая';
       covidDuration = 0;
-      treatmentStatus = 'NOT_HOSPITALIZED';
+      treatmentStatus = '';
       complications = [];
+      zabolivaniya = 'одышка в покое';
+      zabolivaniya1 = 'одышка при нагрузке';
+      zabolivaniya2 = 'редкие эпизоды слабости';
+      postCovidniyOslojeniya = 'Легкая';
     });
   }
 
   // Переменные для хранения введенных данных
   String gender = 'Мужской';
   String zabolivaniya = 'одышка в покое';
+  String zabolivaniya1 = 'одышка при нагрузке';
+  String zabolivaniya2 = 'редкие эпизоды слабости';
   int age = 0;
   double weight = 0.0;
   double height = 0.0;
@@ -361,11 +369,9 @@ class _CalculatorState extends State<Calculator> {
                 onChanged: (value) {
                   setState(() {
                     covidSeverity = value!;
-                    covidSeverity == "Легкая"
-                        ? zabolivaniya = "одышка в покое"
-                        : covidSeverity == "Средняя"
-                            ? zabolivaniya = "одышка при нагрузке"
-                            : zabolivaniya = "редкие эпизоды слабости";
+                    zabolivaniya = 'одышка в покое';
+                    zabolivaniya1 = 'одышка при нагрузке';
+                    zabolivaniya2 = 'редкие эпизоды слабости';
                   });
                 },
               ),
@@ -388,7 +394,7 @@ class _CalculatorState extends State<Calculator> {
               SizedBox(
                 height: 10,
               ),
-              zabolivaniya == "одышка в покое"
+              covidSeverity == "Легкая"
                   ? DropdownButtonFormField<String>(
                       value: zabolivaniya,
                       decoration: InputDecoration(
@@ -413,9 +419,9 @@ class _CalculatorState extends State<Calculator> {
                         });
                       },
                     )
-                  : zabolivaniya == 'одышка при нагрузке'
+                  : covidSeverity == "Средняя"
                       ? DropdownButtonFormField<String>(
-                          value: zabolivaniya,
+                          value: zabolivaniya1,
                           decoration: InputDecoration(
                               labelText: 'Постковидное осложнение',
                               border: OutlineInputBorder(
@@ -437,7 +443,7 @@ class _CalculatorState extends State<Calculator> {
                           },
                         )
                       : DropdownButtonFormField<String>(
-                          value: zabolivaniya,
+                          value: zabolivaniya2,
                           decoration: InputDecoration(
                               labelText: 'Постковидное осложнение',
                               border: OutlineInputBorder(
@@ -483,19 +489,26 @@ class _CalculatorState extends State<Calculator> {
                   // String result = determineLoadLevel();
                   await sendDataToApi().then(
                     (value) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Результат'),
-                          content: Text("result"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('OK'),
-                            )
-                          ],
-                        ),
-                      );
+                      if (value == 200) {
+                        _resetForm();
+                        setState(() {});
+                      }
+                      if (value == 900) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Alert'),
+                            content: Text(
+                                "Xatolik yuz berdi. Internet aloqasini tekshiring va qayta yuboring"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('OK'),
+                              )
+                            ],
+                          ),
+                        );
+                      }
                     },
                   );
                   // showDialog(
