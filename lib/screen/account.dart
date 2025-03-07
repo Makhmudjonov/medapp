@@ -178,9 +178,14 @@ class _AccountState extends State<Account> {
                                       MediaQuery.of(context).size.width * 0.1,
                                   width:
                                       MediaQuery.of(context).size.width * 0.4,
-                                  color: Color(0xFF1F41BB),
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFF1F41BB),
+                                      borderRadius: BorderRadius.circular(10)),
                                   child: Center(
-                                    child: Text("Saqlash"),
+                                    child: Text(
+                                      "Update",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                               ],

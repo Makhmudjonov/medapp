@@ -30,6 +30,14 @@ class _CalculatorState extends State<Calculator> {
   ];
   List ogir = ["редкие эпизоды слабости"];
 
+  List zab2 = [
+    "одышка в покое",
+    "головокружение",
+    "головная боль",
+    "слабость",
+    "нарушение пищеварения"
+  ];
+
   //send data
   Future<void> sendDataToApi() async {
     final url = Uri.parse('http://13.49.49.224:8080/api/userInfo/addInfo');
@@ -90,7 +98,7 @@ class _CalculatorState extends State<Calculator> {
       systolic = 0.0;
       diastolic = 0.0;
       pulse = 0;
-      covidSeverity = 'Тяжелая форма';
+      covidSeverity = 'Легкая';
       covidDuration = 0;
       treatmentStatus = 'NOT_HOSPITALIZED';
       complications = [];
@@ -99,7 +107,7 @@ class _CalculatorState extends State<Calculator> {
 
   // Переменные для хранения введенных данных
   String gender = 'Мужской';
-  String zabolivaniya = 'Легкая';
+  String zabolivaniya = 'одышка в покое';
   int age = 0;
   double weight = 0.0;
   double height = 0.0;
@@ -380,24 +388,72 @@ class _CalculatorState extends State<Calculator> {
               SizedBox(
                 height: 10,
               ),
-              DropdownButtonFormField<String>(
-                value: zabolivaniya,
-                decoration: InputDecoration(
-                    labelText: 'Постковидное осложнение',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9))),
-                items: ['Легкая', 'Средняя', 'Тяжелая']
-                    .map((value) => DropdownMenuItem(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    zabolivaniya = value!;
-                  });
-                },
-              ),
+              zabolivaniya == "одышка в покое"
+                  ? DropdownButtonFormField<String>(
+                      value: zabolivaniya,
+                      decoration: InputDecoration(
+                          labelText: 'Постковидное осложнение',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(9))),
+                      items: [
+                        "одышка в покое",
+                        "головокружение",
+                        "головная боль",
+                        "слабость",
+                        "нарушение пищеварения"
+                      ]
+                          .map((value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          zabolivaniya = value!;
+                        });
+                      },
+                    )
+                  : zabolivaniya == 'одышка при нагрузке'
+                      ? DropdownButtonFormField<String>(
+                          value: zabolivaniya,
+                          decoration: InputDecoration(
+                              labelText: 'Постковидное осложнение',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(9))),
+                          items: [
+                            "одышка при нагрузке",
+                            "периодическая слабость",
+                            "не частые головные боли"
+                          ]
+                              .map((value) => DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              zabolivaniya = value!;
+                            });
+                          },
+                        )
+                      : DropdownButtonFormField<String>(
+                          value: zabolivaniya,
+                          decoration: InputDecoration(
+                              labelText: 'Постковидное осложнение',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(9))),
+                          items: ["редкие эпизоды слабости"]
+                              .map((value) => DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              zabolivaniya = value!;
+                            });
+                          },
+                        ),
               SizedBox(
                 height: 10,
               ),
