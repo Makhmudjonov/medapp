@@ -3,10 +3,13 @@ import 'package:medapp/screen/first_login.dart';
 import 'package:medapp/screen/home.dart';
 import 'package:medapp/screen/login.dart';
 import 'package:medapp/screen/splash_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Ruxsat so‘rash
+
   bool isValid = await isTokenValid();
   runApp(MyApp(
     isLoggedIn: isValid != null,

@@ -14,6 +14,22 @@ class _CalculatorState extends State<Calculator> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = true;
 
+//listlar
+
+  List yengil = [
+    "одышка в покое",
+    "головокружение",
+    "головная боль",
+    "слабость",
+    "нарушение пищеварения"
+  ];
+  List orta = [
+    "одышка при нагрузке",
+    "периодическая слабость",
+    "не частые головные боли"
+  ];
+  List ogir = ["редкие эпизоды слабости"];
+
   //send data
   Future<void> sendDataToApi() async {
     final url = Uri.parse('http://13.49.49.224:8080/api/userInfo/addInfo');
@@ -90,12 +106,12 @@ class _CalculatorState extends State<Calculator> {
   double systolic = 0.0;
   double diastolic = 0.0;
   int pulse = 0;
-  String covidSeverity = 'Тяжелая форма';
+  String covidSeverity = 'Легкая';
   int covidDuration = 0;
   String treatmentStatus = '';
   String osnZabolivaniya = '';
   List complications = [];
-  String postCovidniyOslojeniya = 'Тяжелая форма';
+  String postCovidniyOslojeniya = 'Легкая';
 
   // Можно добавить поля для постковидных осложнений и основного заболевания
 
@@ -328,7 +344,7 @@ class _CalculatorState extends State<Calculator> {
                     borderRadius: BorderRadius.circular(9),
                   ),
                 ),
-                items: ['Тяжелая форма', 'Средняя', 'Тяжелая']
+                items: ['Легкая', 'Средняя', 'Тяжелая']
                     .map((value) => DropdownMenuItem(
                           value: value,
                           child: Text(value),
@@ -337,6 +353,11 @@ class _CalculatorState extends State<Calculator> {
                 onChanged: (value) {
                   setState(() {
                     covidSeverity = value!;
+                    covidSeverity == "Легкая"
+                        ? zabolivaniya = "одышка в покое"
+                        : covidSeverity == "Средняя"
+                            ? zabolivaniya = "одышка при нагрузке"
+                            : zabolivaniya = "редкие эпизоды слабости";
                   });
                 },
               ),

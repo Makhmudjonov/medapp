@@ -250,7 +250,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       phoneNumber: phoneNumber.text,
                                     ),
                                   ))
-                              : null;
+                              : isLoading = false;
                         },
                       );
                     },
