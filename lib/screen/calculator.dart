@@ -471,7 +471,7 @@ class _CalculatorState extends State<Calculator> {
                     borderRadius: BorderRadius.circular(9),
                   ),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.text,
                 onChanged: (value) {
                   complications = [value] ?? [""];
                 },
